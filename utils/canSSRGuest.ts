@@ -9,7 +9,7 @@ const cookies= parseCookies(ctx);
     if(cookies['@sujeitopizza.token']){
       return{
         redirect:{
-          destination:'/dashboard',
+          destination:'/pedidos',
           permanent:false,
         }
       }
