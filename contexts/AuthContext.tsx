@@ -97,7 +97,7 @@ export function AuthProvider({ children }: AuthProviderProps){
         if (token) {
           const response = await api.get('/me');
           const { id,name,email,role,user_name} = response.data;
-          //const organization = response.data.organizationId;
+         
           console.log("me", response.data);
           setUser({
             id,email,name,role,user_name,token

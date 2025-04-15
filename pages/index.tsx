@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from '../styles/Home.module.scss';
 import logoImg from '../public/Logo.png';
-import { Input, TextArea } from "../components/ui/input";
+import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/Button";
 import { AuthContext } from "../contexts/AuthContext";
 import {toast} from 'react-toastify'
