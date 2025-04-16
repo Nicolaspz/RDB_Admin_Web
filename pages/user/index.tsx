@@ -90,7 +90,41 @@ export default function User(){
       toast.error('Erro ao desativar usuário.');
     }
   };
+  const handleUpdateUser = async () => {
+    if (!selectedUser) return;
+    if (newPassword && newPassword !== newPasswordrepeat) {
+      toast.error("As senhas não coincidem!");
+      return;
+    }
+    
+    const updatedData: any = {};
+    
+    if (newPhone.trim()) updatedData.telefone = newPhone;
+    if (newPayment.trim()) updatedData.tipo_pagamento = newPayment;
+    if (newPassword.trim()) updatedData.password = newPassword;
+    if (user?.role === "ADMIN") {
+      if (newName.trim()) updatedData.name = newName;
+      if (newEmail.trim()) updatedData.email = newEmail;
+      if (newRole.trim()) updatedData.role = newRole;
+      if (newUsername.trim()) updatedData.user_name = newUsername;
+    }
 
+    try {
+      await apiClient.put(
+        `/user?userId=${selectedUser.id}`,
+        updatedData,
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+
+      toast.success("Usuário atualizado com sucesso!");
+      fetchUsers();
+      setModalVisible(false);
+      setNewPassword("");
+      setNewPasswordrepeat("");
+    } catch (error) {
+      toast.error("Não foi possível atualizar o usuário.");
+    }
+  };
   
 
   return(
@@ -224,7 +258,142 @@ export default function User(){
         {/* Modal de Edição (existente) */}
         {modalVisible && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            {/* ... conteúdo do modal de edição ... */}
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                {user?.role === "ADMIN" ? "Editar Usuário" : "Editar Perfil"}
+              </h2>
+              
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-medium mb-1">
+                  Nome
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Nome"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-medium mb-1">
+                  Usuário
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Username"
+                  value={newUsername}
+                  onChange={(e) => setNewUsername(e.target.value)}
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-medium mb-1">
+                  Telefone
+                </label>
+                <input
+                  type="tel"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Telefone"
+                  value={newPhone}
+                  onChange={(e) => setNewPhone(e.target.value)}
+                />
+              </div>
+              
+              {user?.role === "ADMIN" && (
+                <>
+                  <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-medium mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="Email"
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-medium mb-1">
+                      Perfil
+                    </label>
+                    <select
+                      value={newRole}
+                      onChange={(e) => setNewRole(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                      <option value="ADMIN">Administrador</option>
+                      <option value="CLIENT">Cliente</option>
+                    </select>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-medium mb-1">
+                      Tipo de Pagamento
+                    </label>
+                    <select
+                      value={newPayment}
+                      onChange={(e) => setNewPayment(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                      <option value="">Selecionar forma de Pagamento</option>
+                      <option value="CONTA_3DIAS">CONTA 3 DIAS</option>
+                      <option value="CONTA_7DIAS">CONTA 7 DIAS</option>
+                      <option value="CONTA_15DIAS">CONTA 15 DIAS</option>
+                      <option value="CONTA_30DIAS">CONTA 30 DIAS</option>
+                      <option value="CONTA_24H">CONTA 24H</option>
+                    </select>
+                  </div>
+                </>
+              )}
+              
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-medium mb-1">
+                  Nova Senha
+                </label>
+                <input
+                  type="password"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Nova Senha"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </div>
+              
+              <div className="mb-6">
+                <label className="block text-gray-700 text-sm font-medium mb-1">
+                  Repetir Senha
+                </label>
+                <input
+                  type="password"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Repetir Senha"
+                  value={newPasswordrepeat}
+                  onChange={(e) => setNewPasswordrepeat(e.target.value)}
+                />
+              </div>
+              
+              <div className="flex gap-3">
+                <button
+                  onClick={handleUpdateUser}
+                  className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition duration-200"
+                >
+                  Salvar
+                </button>
+                <button
+                  onClick={() => setModalVisible(false)}
+                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition duration-200"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
           </div>
         )}
       </div>
