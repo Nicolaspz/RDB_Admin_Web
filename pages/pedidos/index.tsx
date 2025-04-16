@@ -173,7 +173,7 @@ export default function Dashboard() {
   return (
     <>
       <Head>
-        <title>Dashboard - RDB Transportes</title>
+        <title>Pedidos - RDB Transportes</title>
       </Head>
       <Sidebar>
         <Header />

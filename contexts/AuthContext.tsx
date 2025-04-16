@@ -162,13 +162,8 @@ export function AuthProvider({ children }: AuthProviderProps){
       //Passar para proximas requisiçoes o nosso token
       api.defaults.headers['Authorization'] = `Bearer ${token}`
       
-      if(user.role==='admin'){
-        Router.push('/dashboard');
-      }
-      
-      
-
-
+        Router.push('/pedidos');
+     
     }catch(err){
       toast.error("Erro ao Logar")
       console.log(err);
